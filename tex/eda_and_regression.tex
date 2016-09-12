@@ -1,0 +1,655 @@
+% \documentclass[xcolor=dvipsnames]{beamer}
+% \usepackage{beamerthemesplit}
+% \usepackage{bm,amsmath,color}
+% \definecolor{darkblue}{rgb}{0.0,0.0,0.50}
+% \definecolor{myorange}{cmyk}{0,0.7,1,0}
+% \hypersetup{colorlinks = true, linkcolor=darkblue, citecolor=darkblue, 
+% urlcolor=darkblue}
+% \hypersetup{pdfauthor={Samwise the great}, pdftitle={Really it is a tale of samwise}}
+% 
+% %% create a color to highlight things
+% \newcommand{\highlt}{\textcolor {myorange}}
+% 
+% %% set beamer theme and color change them as you want
+% \usetheme{Frankfurt}
+% \usecolortheme{rose}
+% \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%% beamer packages
+% other themes: AnnArbor, Antibes, Bergen, Berkeley, Berlin, Boadilla, boxes, 
+% CambridgeUS, Darmstadt, Dresden, Frankfurt, Goettingen, Hannover, Ilmenau,
+%JuanLesPins, Luebeck, Madrid, Malmoe, Marburg, Montpellier, PaloAlto,
+%Pittsburgh, Rochester, Singapore, Szeged, Warsaw
+% other colors: albatross, beaver, crane, default, dolphin, dove, fly, lily, 
+%orchid, rose, seagull, seahorse, sidebartab, structure, whale, wolverine,
+%beetle
+
+\documentclass[xcolor=dvipsnames]{beamer}
+\usepackage{beamerthemesplit}
+\usepackage{bm,amsmath,marvosym}
+\usepackage{listings,color}%xcolor
+\usepackage[utf8]{inputenc}
+\definecolor{shadecolor}{rgb}{.9, .9, .9}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.5}
+\definecolor{myorange}{cmyk}{0,0.7,1,0}
+%\definecolor{mypurple}{cmyk}{0.5,1.0,0,0.2}
+\definecolor{mypurple}{cmyk}{0.3, 0.9, 0.0, 0.2}
+
+\lstnewenvironment{code}{
+    \lstset{backgroundcolor=\color{shadecolor},
+        showstringspaces=false,
+        language=python,
+        frame=single,
+        framerule=0pt,
+        keepspaces=true,
+        breaklines=true,
+        basicstyle=\ttfamily,
+        keywordstyle=\bfseries,
+        basicstyle=\ttfamily\scriptsize,
+        keywordstyle=\color{blue}\ttfamily,
+        stringstyle=\color{red}\ttfamily,
+        commentstyle=\color{green}\ttfamily,
+        columns=fullflexible
+    }
+}{}
+
+\lstnewenvironment{codeout}{
+    \lstset{backgroundcolor=\color{shadecolor},
+        frame=single,
+        framerule=0pt,
+        breaklines=true,
+        basicstyle=\ttfamily\scriptsize,
+        columns=fullflexible
+    }
+}{}
+
+\hypersetup{colorlinks = true, linkcolor=darkblue, citecolor=darkblue,urlcolor=darkblue}
+\hypersetup{pdfauthor={C. West}, pdftitle={linear algebra and numpy}}
+
+\newcommand{\rd}{\textcolor{red}}
+\newcommand{\grn}{\textcolor{green}}
+\newcommand{\keywd}{\textcolor{myorange}}
+\newcommand{\highlt}{\textcolor{darkblue}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\def\ci{\perp\!\!\!\perp}
+
+% set beamer theme and color
+\usetheme{Frankfurt}
+%\usetheme{Boadilla}
+%\usecolortheme{dolphin}
+\usecolortheme{seagull}
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+
+\title[EDA and Linear Regression]{EDA and Linear Regression}
+\author[]{}
+%\institute{The Prancing Pony}
+\date[\today]{Last updated: \today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\frame{\titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\footnotesize
+\tableofcontents
+\normalsize
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overview}
+\subsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{
+    \frametitle{Overview}
+    \begin{itemize}
+        \item Exploratory Data Analysis
+        \item Simple Linear Regression
+        \item Multiple Linear Regression
+        \item Assessing Fit
+        \item Comparing Model
+        \item Interpretation of Model Output
+    \end{itemize}
+}
+
+
+%\frame{   
+%\frametitle{Motivation for Linear Algebra}
+%\begin{itemize}
+%\item <1-> a simple Markov Chain Monte Carlo (MCMC) algorithm 
+%  	\begin{enumerate}
+%  	 	\item choose some initial value
+%  		\item do something with it
+%	\end{enumerate}
+%  \item <2-> another something else
+%
+%\vspace{2cm}
+%  
+%\begin{flushleft}
+% \tiny{this only works in ``presentation'' mode}
+%\end{flushleft}  
+%\end{itemize}
+%}
+
+\section{EDA}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{EDA}
+    High level overview of a new dataset
+
+    \begin{itemize}
+        \item How are the data arranged
+        \item What variables do we have: categorical vs. continuous
+        \item Are there missing values
+        \item What do the distributions look like
+        \item How are features related
+    \end{itemize}
+
+}
+%We can arrange things into colums... really anything so a little figure on the left and a description on the right or a table
+%you may need to play with column size
+%\vspace{.5cm}
+%\begin{columns}
+%\begin{column}{5cm}
+%\begin{center}
+%\underline{Sequences} \\
+%15264 Forward \\
+%15270 Reverse \\
+%2344 Failed QC \\
+%84570 Total ORFs \\
+%32322 After trimming \\
+%414124 After digestion
+%\end{center}
+%\end{column}
+%\begin{column}{5cm}
+%\begin {itemize}
+%\item la la la
+%\item la ti di da 
+%\item another la la 
+%\end{itemize}
+%\end{column}
+%\end{columns}
+
+
+\frame{
+    \frametitle{Data Cleaning/Munging}
+    Most of the we'll have to clean the data we get
+    \begin{itemize}
+        \item <1-> Dirtiness - does the data make sense
+           
+        \item <2-> Missing Data
+            \begin{itemize}
+                \item <2-> What do we do?
+                \item <3-> Drop rows with missing values
+                \item <3-> Impute the missing values
+            \end{itemize}
+        \item <4-> Convert data types
+        \item <5-> Transform data
+    \end{itemize}
+
+}
+
+\frame{
+    \frametitle{Types of Variables}
+\begin{itemize}
+    \item Qualitative (Categorical)
+        \begin{itemize}
+            \item Barcharts
+        \end{itemize}
+    \item Quantitative (Continuous)
+        \begin{itemize}
+            \item Histogram
+            \item Scatterplot
+            \item Boxplot
+        \end{itemize}
+\end{itemize}
+
+We want to get an idea of what our variables look like
+
+
+}
+
+\section{Simple Linear Regression}
+
+\frame{
+    \frametitle{Simple Linear Regression}
+    The idea is to describe a linear relationship between two variables
+
+    \begin{itemize}
+        \item Fuel milage and horsepower
+        \item Income and savings
+        \item On-base percentage and wins
+        \item Etc.
+    \end{itemize}
+
+    We're going to do that by fitting a line to our data
+
+}   
+\frame{
+    \frametitle{Linear Regression Model}
+    The basic model is 
+    $$Y = \beta_0 + \beta_{1}X + \varepsilon$$
+    \begin{itemize}
+        \item $\beta_0$ and $\beta_1$ are unknown constants that represent the intercept and slope of our line
+        \item $\varepsilon$ is the error term
+            \begin{itemize}
+                \item $\varepsilon \sim i.i.d. N\left(0, \sigma^{2}\right)$
+                \item This is the reason not all point are on the line
+            \end{itemize}
+        \item Since we don't know $\beta_0$ or $\beta_1$ we'll estimate them
+        \item $\hat{y} = \hat{\beta}_0 + \hat{\beta}_{1}x$
+            \begin{itemize}
+                \item $\hat{\beta}_0, \hat{\beta}_1$ are our estimates
+                \item $\hat{y}$ is our prediction
+                    \end{itemize}
+                \item Can think of $Y|_{X} \sim N\left(\beta_0 + \beta_{1}X, \sigma^2\right)$
+    \end{itemize}
+
+
+    }
+   
+
+\frame{
+    \frametitle{Estimating Coefficients}
+    We want to find the line that fits our data the ``best''
+
+    If we define our residual as
+    $$e_i = y_i - \hat{y}_i$$
+
+    Then the best line is the one that minimizes the sum of the squared residuals
+    \begin{equation*}
+        RSS = \sum _i e_{}^{2} = \sum _i \left(y_i - \hat{\beta}_0 - \hat{\beta}_{1}x_i\right)^2
+    \end{equation*}
+
+    Sovling this equation gives us
+    \begin{equation*}
+        \hat{\beta}_0 = \overline{y} - \hat{\beta}_{1}\overline{x}
+    \end{equation*}
+    \begin{equation*}
+        \hat{\beta}_1 = \frac{\sum \left(x_i - \overline{x}\right)\left(y_i - \overline{y}\right)}{\sum _i \left(x_i - \overline{x}\right)^2}
+    \end{equation*}
+
+    
+}
+
+\frame{
+    \frametitle{Four Assumptions for Linear Regression}
+    There are four assumptions that need to be met in order for our linear regression model to be valid
+    \begin{itemize}
+        \item <1-> Linearity
+            \begin{itemize}
+                \item <1-> The relationship between X and Y is linear
+            \end{itemize}
+        \item <2-> Constant Standard Deviation
+            \begin{itemize}
+                \item <2-> The standard deviation of $y$ does not depend on $X$
+            \end{itemize}
+        \item <3-> Independence
+            \begin{itemize}
+                \item <3-> The residuals are independent of X
+            \end{itemize}
+        \item <4-> Normality
+            \begin{itemize} 
+                \item <4-> The residuals are normally distributed
+            \end{itemize}
+    \end{itemize}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Matrices}
+%\subsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+    \frametitle{Assessing Model Fit}
+    Once we estimate a model we can judge how well it fits our data
+
+    \begin{itemize}
+        \item Look at statistical significance of our coefficients
+            \begin{itemize}
+                \item $H_{0}: \beta_i=0$
+                \item Get p-value and CI for $\hat{\beta}_i$
+            \end{itemize}
+        \item Look at the significance of the model
+            \begin{itemize}
+                \item $H_{0}: \beta_1 = \beta_2 = \dots = \beta_{k} = 0$
+                \item This is done with an F-test
+            \end{itemize}
+        \item Look at fit statistics
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Significance of Coefficients}
+        For each of our coefficent estimates we can perform a hypothesis test
+        \begin{itemize}
+            \item $H_0: \beta_{1} = 0$
+            \item Test statistic is $$\frac{\hat{\beta}_{1} - 0}{SE\left(\hat{\beta}_1\right)}$$
+            \item CI is $$\hat{\beta_{1}} \pm t_{\frac{\alpha}{2}}*SE\left(\hat{\beta}_{1}\right)$$
+        \end{itemize}
+
+        If p-value is less than $\alpha$ then coefficient is statitically significant
+        \begin{itemize}
+            \item The associated X variable has some explanatory power
+        \end{itemize}
+}
+
+\frame{
+    \frametitle{Significance of Regression}
+    For multiple regression we can test the signficance of the regression as a whole
+    \begin{itemize}
+        \item Is it even worth doing a regression analysis at all
+    \end{itemize}
+
+    We do this with a F-test
+
+    \begin{itemize}
+        \item $H_{0}: \beta_1 = \beta_{2} = \dots = \beta_{k}$
+        \item Test statistic is $$ F = \frac{\left(TSS - RSS\right)/k}{RSS/\left(n-k-1\right)} \sim F_{k, n-k-1}$$
+        \item TSS is the Total Sum of Squares = $\sum \left(y_i - \overline{y}_i\right)$
+        \item If we reject this null, then at least one of our $X$ variables has some explanatory power
+    \end{itemize}
+    
+    The F-test can also be used to test the significance of a subset of our X variables
+    
+}
+
+\frame{
+    \frametitle{Fit Statistics}
+    \begin{itemize}
+        \item RSS is the Residual Sum of Squares
+            \begin{itemize}
+                \item The variation in $y$ that is unexplained by $X$
+                \item Not very informative (increases with n)
+            \end{itemize}
+        \item MSE is $\frac{RSS}{n-k-1}$
+            \begin{itemize}
+                \item ``Average`` unexplained error
+            \end{itemize}
+        \item $R^2$ is $\frac{TSS-RSS}{TSS} = 1 - \frac{RSS}{TSS}$
+            \begin{itemize}
+                \item Proportion of variation in y explained by variation in X
+            \end{itemize}
+    \end{itemize}
+
+    
+}
+
+\frame{
+    \frametitle{Comparing Multiple Models}
+    How do we decide which variables to include in our model?
+   
+    We could pick the model with the highest $R^{2}$
+    \begin{itemize}
+        \item <1-> Turns out not to be such a great idea
+        \item <1-> Why?
+        \item <2-> $R^{2}$ will never decrease
+    \end{itemize}
+
+    One solution is to look at the Adjusted $R^2$
+    \begin{itemize}
+        \item $Adj. R^{2} = 1 - \left(1 - R^{2}\right)\frac{n-1}{n-k-1}$
+        \item Penalizes $R^{2}$ for including extra variables
+    \end{itemize}
+
+    There are other ways as well
+}
+\frame{
+    \frametitle{F-test}
+    Suppose we have a model for gas milage
+    \begin{equation*}
+        Y_{full} = \beta_0 + \beta_{1}weight + \beta_{2}horsepower + \beta_{3}color + \beta_{4}height
+    \end{equation*}
+    But we suspect height and color might not be important, so we can consider
+    \begin{equation*}
+        Y_{reduced} = \beta_{0} + \beta_{1}weight + \beta_{2}horsepower
+    \end{equation*}
+
+    we can use an F-test to test $H_0:\beta_{3} = \beta_{4} = 0$
+    \begin{equation*}
+        F = \frac{\left(RSS_{reduced} - RSS_{full}\right)/\left(k_{full}-k_{reduced}\right)}{RSS_{full}/\left(n-k_{full}-1\right)}
+    \end{equation*}
+    The idea is that if $\beta_{3}$ and $\beta_{4}$ don't matter, then $\left(RSS_{reduced} - RSS_{full}\right)$ will be small, so $F$ will be small
+
+}
+
+\frame{
+    \frametitle{AIC and BIC}
+    Additionally we can look at the AIC and BIC for the model
+    \begin{itemize}
+        \item Akaike Information Criterion = $2k - 2 ln\left(\mathcal{L}\right)$
+        \item Bayesian Information Criterion = $-2 ln\left(\mathcal{L}\right) + k ln\left(n\right)$
+        \item $\mathcal{L}$ is the maximized value of the likelihood function
+    \end{itemize}
+    Both of these scores penalize models with more explanatory variables
+
+    \begin{itemize}
+        \item Question: Do we want lower or higher values of AIC/BIC?
+    \end{itemize}
+        }
+
+\frame{
+    \frametitle{Interpretation}
+    Let's interpret some results
+}
+   
+\section{Summary}
+
+\frame{
+    \frametitle{EDA Summary}
+    EDA is a first look at the data
+    \begin{itemize}
+        \item Look at first few rows
+        \item Plot variables to examine distributions/relationships
+        \item What to do with missing data
+        \item What else?
+    \end{itemize}
+}
+\frame{
+    \frametitle{Linear Regression Summary}
+
+    Steps in Linear Regression
+    \begin{itemize}
+        \item Fit model
+        \item Examine Residuals
+        \item Examine Results
+            \begin{itemize}
+                \item Are all variables significant and make sense?
+                \item If not, try other models
+            \end{itemize}
+        \item Examine Residuals
+        \item Interpret Results
+    \end{itemize}
+}
+
+%\frametitle{Example table}
+%\begin{table}
+%	\begin{center}
+%		\textbf{Descriptive Statistics}
+%	\end{center}
+%	\begin{tabular}{llll}
+%	\hline
+%	Stat & Cleaves & Length &Mass \\
+%	\hline
+%	Min & 1 & 3 & $500^*$ \\
+%	Max & 51 & 192 &  20446 \\
+%	Median & 10 & 12 & 1130  \\
+%	\hline
+%	\end{tabular}
+%	\label{table1}
+%\end{table}
+%$^*$ \small 500 Dalton is the suggested minimum peptide mass
+%}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame
+%{
+%  \frametitle{The block thing}
+%  \begin{block}{I am a block}
+%   you can put what ever you want in a block like bullets.  Here is an example citation. 
+%  \end{block}
+%
+%  \begin{enumerate}
+%  \item \highlt{something} - is defined as something
+%  \item \keywd{anther something} - is defined as something else         
+%  \item \highlt{that something} - and so on  
+%  \end{enumerate}
+%
+%\vspace{3cm}
+%\begin{flushleft}
+%\tiny{Anoter book but not as good as the one Bilbo wrote \tiny{\cite{Mount04}}}
+%\end{flushleft}
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[fragile]
+%\scriptsize
+%\frametitle{How to use verbatim}
+%\begin{verbatim}
+%#!/usr/bin/perl -w
+%# Some code or something  
+%
+%print "\n", "I can write anything here!!!", "\n";
+%\end{verbatim}
+% \begin{flushleft}
+%  See \href{http://www.columbia.edu/~jwp2128/Teaching/E6892/papers/mlss2007.pdf}{a lecture on Dirichlet processes} and \cite{Knuth92} for more information
+% \end{flushleft}
+%\end{frame}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \frame{
+%%  \frametitle{Including plots}
+%%  \scriptsize
+%% 
+%%  \begin{center}
+%%  \includegraphics[scale=0.3]{Someplot.png}
+%% \end{center}
+%% 
+%% \begin{flushleft}
+%%  \tiny{\cite{Mount04}}
+%% \end{flushleft}
+%%  \normalsize
+%% }
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Rohan}
+%\subsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame{
+%\frametitle{Some math}
+%\footnotesize
+%This approach, inspired by Yan and Nielsen, uses a set of 61 codon fitness parameters.
+%\begin{equation} 
+% \psi = (\psi_{a}) \text{ where } a \in \{1 \ldots 61 \} \text{ and } \sum a = 1 
+%\end{equation}
+%
+%\begin{equation}
+% Q_{ab} = \left\{
+% \begin{array}{l l}
+% \rho_{a_{c} b_{c}} \varphi_{b_{c}} \left( \frac{\psi_{b}}{\psi_{a}} \right)^{1/2},                        
+%     & \quad \text{\tiny{if a and b are synonymous and differ only at} } c^{\text{th}} \text{\tiny{codon position}}\\
+% \omega \rho_{a_{c} b_{c}} \varphi_{b_{c}} \left( \frac{\psi_{b}}{\psi_{a}} \right)^{1/2}, 
+%     & \quad \text{\tiny{if a and b are nonsynonymous and differ only at} } c^{\text{th}} \text{\tiny{codon position}}\\
+%    0,                                         
+%     & \quad \text{\tiny{otherwise.}} 
+%  \end{array} \right.
+% \end{equation}
+%With or without $\omega$ the models are referred to as Codon Preference (CP).  Therefore we have MG-CP, MG-NS-CP, and MG-NSDP-CP.
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[fragile]
+% \frametitle{some example code and output}
+%\tiny
+% \scriptsize
+%\begin{code}
+%from sklearn.grid_search import GridSearchCV
+% 
+%random_forest_grid = {'max_depth': [3, None],
+%                      'max_features': ['sqrt', 'log2', None],
+%                      'min_samples_split': [1, 2, 4],
+%                      'min_samples_leaf': [1, 2, 4],
+%                      'bootstrap': [True, False],
+%                      'n_estimators': [20, 40, 60, 80, 100, 120],
+%                      'random_state': [42]}
+%
+%rf_gridsearch = GridSearchCV(RandomForestClassifier(),
+%                             random_forest_grid,
+%                             n_jobs=-1,verbose=True,
+%                             scoring='f1_weighted')
+%rf_gridsearch.fit(X_train, y_train)
+%print "best parameters:", rf_gridsearch.best_params_
+% 
+% 
+%\end{code}
+% 
+%\begin{codeout}
+% best parameters: {'bootstrap': True, 'min_samples_leaf': 1, 'n_estimators': 100, 'min_samples_split': 1, 'random_state': 42, 'max_features': 'sqrt', 'max_depth': None}
+%\end{codeout}
+%\end{frame}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame{
+%\scriptsize
+%\begin{enumerate}
+% \item Don't forget that itemize/enumerate can be nested
+% \item For each classifier:
+%     \begin{itemize}
+%     \scriptsize
+%      \item Fit the classifier to the training data by minimizing the weighted error function
+%      \begin{equation}
+%       J_{m} = \sum^{N}_{n=1} w_{n}^{(m)} I(y_{m}(\mathbf{x}_{n}) \neq t_{n}) 
+%      \end{equation}
+%      \item Then evaluate
+%      \begin{equation}
+%       \epsilon_{m} = \frac{\sum^{N}_{n=1}w_{n}^{(m)} I(y_{m}(\mathbf{x}_{n}) \neq t_{n})}{\sum^{N}_{n=1}w_{n}^{(m)}}
+%      \end{equation}
+%      \item to get 
+%      \begin{equation}
+%      \alpha_{m} = \ln \left\{ \frac{1-\epsilon_{m}}{\epsilon_{m}} \right\}
+%     \end{equation}
+%     
+%     \item Update the weighting coefficients
+%     \begin{equation}
+%      w_{n}^{(m+1)} = w_{n}^{(m)} \textrm{exp} \{ \alpha_{m} I(y_{m}(\mathbf{x}_{n}) \neq t_{n}) \}
+%     \end{equation}
+%     
+%     \end{itemize}
+% \item Make predictions using the final model
+% \begin{equation}
+% Y_{M}(\mathbf{x}) = \textrm{sign} \left[ \sum^{M}_{m=1} \alpha_{m} C_{m} (x) \right]    
+%\end{equation}
+%\end{enumerate}
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\frame[allowframebreaks]{
+%\frametitle{References}
+%\tiny
+%\begin{thebibliography}{9}
+%\bibliographystyle{apalike}
+%\setbeamertemplate{bibliography item}[article]
+%\bibitem{Knuth92}  D.E. Knuth, \emph{Two notes on notation}, Amer. Math. Monthly \textbf{99} (1992), 403--422.
+%\setbeamertemplate{bibliography item}[book]
+%\bibitem{Mount04} D W Mount, \emph{Bioinformatics: Sequence and Genome Informatics}, 2nd Edition, 2004 Cold Spring Harbor Laboratory Press, Cold Spring Harbor, NY pp 549 - 611
+%\setbeamertemplate{bibliography item}[online]
+%\bibitem{BioPerl} BioPerl - \href{http://www.bioperl.org/wiki/Main\_Page}{http://www.bioperl.org/wiki/Main\_Page}
+%\setbeamertemplate{bibliography item}[article]
+%\bibitem{Mangalam02} M H Mangalam, The Bio* toolkits--a brief overview., Brief Bioinform. 2002 Sep;3(3):296-302.
+%\bibitem{Stajich02} J E Stajich \textit{et al.},The Bioperl toolkit: Perl modules for the life sciences., Genome Res. 2002 Oct;12(10):1611-8.
+%\end{thebibliography}
+%\normalsize
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\frame[allowframebreaks]{  
+%%\begin{tiny} \bibliography{galvanize-refs.bib}
+%%\bibliographystyle{apalike}          % Style BST file
+%%\end{tiny}
+%%}
+
+\end{document}

@@ -1,0 +1,675 @@
+% \documentclass[xcolor=dvipsnames]{beamer}
+% \usepackage{beamerthemesplit}
+% \usepackage{bm,amsmath,color}
+% \definecolor{darkblue}{rgb}{0.0,0.0,0.50}
+% \definecolor{myorange}{cmyk}{0,0.7,1,0}
+% \hypersetup{colorlinks = true, linkcolor=darkblue, citecolor=darkblue, 
+% urlcolor=darkblue}
+% \hypersetup{pdfauthor={Samwise the great}, pdftitle={Really it is a tale of samwise}}
+% 
+% %% create a color to highlight things
+% \newcommand{\highlt}{\textcolor {myorange}}
+% 
+% %% set beamer theme and color change them as you want
+% \usetheme{Frankfurt}
+% \usecolortheme{rose}
+% \setbeamertemplate{blocks}[rounded][shadow=true]
+
+%% beamer packages
+% other themes: AnnArbor, Antibes, Bergen, Berkeley, Berlin, Boadilla, boxes, 
+% CambridgeUS, Darmstadt, Dresden, Frankfurt, Goettingen, Hannover, Ilmenau,
+%JuanLesPins, Luebeck, Madrid, Malmoe, Marburg, Montpellier, PaloAlto,
+%Pittsburgh, Rochester, Singapore, Szeged, Warsaw
+% other colors: albatross, beaver, crane, default, dolphin, dove, fly, lily, 
+%orchid, rose, seagull, seahorse, sidebartab, structure, whale, wolverine,
+%beetle
+
+\documentclass[xcolor=dvipsnames]{beamer}
+\usepackage{beamerthemesplit}
+\usepackage{bm,amsmath,marvosym}
+\usepackage{listings,color}%xcolor
+\usepackage[utf8]{inputenc}
+\definecolor{shadecolor}{rgb}{.9, .9, .9}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.5}
+\definecolor{myorange}{cmyk}{0,0.7,1,0}
+%\definecolor{mypurple}{cmyk}{0.5,1.0,0,0.2}
+\definecolor{mypurple}{cmyk}{0.3, 0.9, 0.0, 0.2}
+
+\lstnewenvironment{code}{
+    \lstset{backgroundcolor=\color{shadecolor},
+        showstringspaces=false,
+        language=python,
+        frame=single,
+        framerule=0pt,
+        keepspaces=true,
+        breaklines=true,
+        basicstyle=\ttfamily,
+        keywordstyle=\bfseries,
+        basicstyle=\ttfamily\scriptsize,
+        keywordstyle=\color{blue}\ttfamily,
+        stringstyle=\color{red}\ttfamily,
+        commentstyle=\color{green}\ttfamily,
+        columns=fullflexible
+    }
+}{}
+
+\lstnewenvironment{codeout}{
+    \lstset{backgroundcolor=\color{shadecolor},
+        frame=single,
+        framerule=0pt,
+        breaklines=true,
+        basicstyle=\ttfamily\scriptsize,
+        columns=fullflexible
+    }
+}{}
+
+\hypersetup{colorlinks = true, linkcolor=darkblue, citecolor=darkblue,urlcolor=darkblue}
+\hypersetup{pdfauthor={C. West}, pdftitle={linear algebra and numpy}}
+
+\newcommand{\rd}{\textcolor{red}}
+\newcommand{\grn}{\textcolor{green}}
+\newcommand{\keywd}{\textcolor{myorange}}
+\newcommand{\highlt}{\textcolor{darkblue}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\def\ci{\perp\!\!\!\perp}
+
+% set beamer theme and color
+\usetheme{Frankfurt}
+%\usetheme{Boadilla}
+%\usecolortheme{dolphin}
+\usecolortheme{seagull}
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+
+\title[Linear Algebra and Numpy]{Linear Algebra and Numpy}
+\author[]{}
+%\institute{The Prancing Pony}
+\date[\today]{Last updated: \today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\frame{\titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\footnotesize
+\tableofcontents
+\normalsize
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Vectors}
+\subsection{Linear Algebra}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{
+    \frametitle{Motivation for Linear Alegebra}
+    \begin{itemize}
+        \item Linear algebra is the mathematics of vectors
+        \item It is used in many aspects of Machine Learning
+            \begin{itemize}
+                \item Dimensionality Reduction
+                \item Recommender Systems
+                \item Classification
+                \item Clustering
+            \end{itemize}
+        \item So it's important to be familiar with the concept
+    \end{itemize}
+}
+
+
+%\frame{   
+%\frametitle{Motivation for Linear Algebra}
+%\begin{itemize}
+%\item <1-> a simple Markov Chain Monte Carlo (MCMC) algorithm 
+%  	\begin{enumerate}
+%  	 	\item choose some initial value
+%  		\item do something with it
+%	\end{enumerate}
+%  \item <2-> another something else
+%
+%\vspace{2cm}
+%  
+%\begin{flushleft}
+% \tiny{this only works in ``presentation'' mode}
+%\end{flushleft}  
+%\end{itemize}
+%}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Vectors}
+A vector can be reprsented by an array of real numbers:
+\begin{equation*}
+    \mathbf{x}=\left[x_1, x_2, \dots, x_n\right]
+\end{equation*}
+
+A vector specifies a point in a (vector) space.
+
+Can think of a vector as an arrow with its tail at the origin
+
+The vector the gives the location of the tip of the arrow
+
+The number of elements in the vector define the dimension of the vector
+\begin{itemize}
+    \item $\left[2, 2\right]$ is a two dimensional vector
+    \item $\left[x_1, x_2, \dots, x_n\right]$ is an n-dimensional vector
+    \item $\left[4\right]$ is a one dimensional vector, called a scalar
+\end{itemize}
+}
+%We can arrange things into colums... really anything so a little figure on the left and a description on the right or a table
+%you may need to play with column size
+%\vspace{.5cm}
+%\begin{columns}
+%\begin{column}{5cm}
+%\begin{center}
+%\underline{Sequences} \\
+%15264 Forward \\
+%15270 Reverse \\
+%2344 Failed QC \\
+%84570 Total ORFs \\
+%32322 After trimming \\
+%414124 After digestion
+%\end{center}
+%\end{column}
+%\begin{column}{5cm}
+%\begin {itemize}
+%\item la la la
+%\item la ti di da 
+%\item another la la 
+%\end{itemize}
+%\end{column}
+%\end{columns}
+
+
+\frame{
+    \frametitle{Vector Operations}
+    Now that we know what a vector is, what can we do with them?
+    \begin{itemize}
+        \item <1-> We can add a scalar
+            \begin{itemize}
+                \item $\mathbf{x} + a = \left[x_{1} + a, x_{2} + a,  + \dots x_{n} + a\right]$
+            \end{itemize}
+        \item <2-> We can multiply by a scalar
+            \begin{itemize}
+                \item $a\mathbf{x}= \left[ax_{1}, ax_{2}, \dots, ax_{n}\right]$
+            \end{itemize}
+        \item <3-> We can add and subtract them
+            \begin{itemize}
+                \item $\mathbf{x} + \mathbf{y} = \left[x_{1}+y_{1}, x_{2}+y_{2}, \dots, x_{n}+y_{n}\right]$
+                \item $\mathbf{x} - \mathbf{y} = \left[x_{1}-y_{1}, x_{2}-y_{2}, \dots, x_{n}-y_{n}\right]$
+                \item Note: $\mathbf{x}$ and $\mathbf{y}$ must be the same dimension for this to work
+                \item This is know as a linear combination of $\mathbf{x}$ and $\mathbf{y}$
+            \end{itemize}
+
+    \end{itemize}
+
+}
+
+\frame{
+    \frametitle{Dot Product}
+    The dot product of two vectors $\mathbf{x}$ and $\mathbf{y}$ is 
+    \begin{equation*}
+        \mathbf{x}\cdot\mathbf{y} = \sum_i{ x_{i}y_{i}}
+    \end{equation*}
+
+    Note that $\mathbf{x}$ and $\mathbf{y}$ must be the same dimension
+
+    This operations takes two vectors and returns a scalar
+
+    If the dot product of two vectors is zero then the vectors are \textit{orthogonal}, or perpendicular
+}
+
+\frame{
+    \frametitle{Norm of a Vector}
+    The norm of a vector $\mathbf{x}$ is defined as
+    \begin{equation*}
+        \lVert x \rVert = \sqrt{x_{1}^{2} + x_{2}^{2} + \dots x_{n}^{2}}
+    \end{equation*}
+
+    This gives us the length, or magnitude of the vector.
+
+    This is called the $l_{2}$ norm, in general the $l_{p}$ norm is
+    \begin{equation*}
+        \lVert x \rVert_p = \left(\lvert x_{1}\rvert^{p} + \lvert x_{2}\rvert^{p} + \dots + \lvert x_{n}\rvert^{p}\right)^{\frac{1}{p}}
+    \end{equation*}
+
+    \begin{itemize}
+        \item <1-> When does this come up in machine learning?
+        \item <2-> Normalization
+            \begin{itemize}
+                \item Dividing a vector by its norm $\mathbf{\frac{x}{\lVert x\rVert}}$ makes it a \textit{unit vector} (i.e. $\lVert\mathbf{u}\rVert = 1$
+                \item Puts all variables on scale from [0, 1]
+            \end{itemize}
+        \item <3-> Regularization
+            \begin{itemize}
+                \item Helps prevent overfitting
+            \end{itemize}
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Using the Norm: Distance and Angles}
+    \begin{itemize}
+        \item The norm can help us calculate the difference between two vectors:
+        \begin{equation*}
+            d\left(\mathbf{x}, \mathbf{y}\right) = \lVert \mathbf{x}-\mathbf{y} \rVert
+        \end{equation*}
+        \item It can also help us calculate the angle $\theta$ beteen two vectors (along with the dot product)
+        \begin{equation*}
+            cos\left(\theta\right) = \mathbf{\frac{x \cdot y}{\lVert x \rVert \lVert y \rVert}}
+        \end{equation*}
+            \begin{itemize}
+                \item This is called the \textit{cosine similarity}
+                \item Ranges between [-1, 1]
+            \end{itemize}
+    \end{itemize}
+    }
+   
+
+\frame{
+    \frametitle{Similarity}
+    \begin{itemize}
+        \item <1-> We can use both distance and angle to measure similarity
+        \item <1-> Two vectors are similar if the distance between them is ``small''
+        \item <1-> Two vectors are similar if their cosine similarity is close to 1
+        \item <1-> When would this be useful in machine learning?
+            \begin{itemize}
+                \item <2-> Classification
+                \item <2-> Clustering
+                \item <2-> Recommender systems
+            \end{itemize}
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Linear Combination}
+    \begin{itemize}
+        \item For some vectors $\left(\mathbf{x}_1, \mathbf{x}_2, \dots \mathbf{x}_k\right)$ if one vector $\mathbf{x_i}$ can be written as
+            \begin{equation*} 
+                \mathbf{x}_i = a_{1}\mathbf{x}_1 + a_2\mathbf{x}_2 + \dots +a_{i-1}\mathbf{x}_{i-1} + a_{i+1}\mathbf{x}_{i+i} + \dots + a_k\mathbf{x}_k
+            \end{equation*}
+
+            Then $\mathbf{x}_i$ is a linear combination of the vectors $\left(\mathbf{x}_1, \mathbf{x}_2, \dots \mathbf{x}_{i-1} , \mathbf{x}_{i+1}, \dots , \mathbf{x}_k\right)$
+
+
+        \item We say that the vectors are \textit{linearly dependent}
+    \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Matrices}
+\subsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+    \frametitle{Definition}
+    A matrix is an array of numbers with $n$ rows and $p$ columns:
+        \begin{equation*}
+            X = \left[
+            \begin{matrix} 
+                x_{11} & x_{12} & \dots & x_{1p }\\
+                x_{21} & x_{22} & \dots & x_{2p} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                x_{n1} & x_{n2} & \dots & x_{np}
+            \end{matrix}
+            \right]
+        \end{equation*}
+
+    The dimension of $X$ is $n \times p$
+
+    $x_{ij}$ refers to the element in the $i^{th}$ row and $j^{th}$ column
+}
+
+\frame{
+    \frametitle{Basic Properties}
+    If $X$ and $Y$ are both $n \times p$ matrices then
+    \begin{itemize}
+        \item $X+Y$ is a matrix whose $\left(i, j\right)^{th}$ entry is $x_{ij}+y_{ij}$
+        \item $X-Y$ is a matrix whose $\left(i, j\right)^{th}$ entry is $x_{ij}-y_{ij}$
+        \item $aX$ is a matrix whose $\left(i, j\right)^{th}$ entry is $ax_{ij}$
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Matrix Multiplication}
+    \begin{itemize}
+        \item In order to multiply two matrices they must be \textit{conformable}
+
+
+        \item This means the number of columns of the first matrix must be the same as the number of rows of the second
+
+
+        \item If two matrices are conformable then the product of $XY$ is a matrix $M$ whose $\left(i, j\right)^{th}$ element is the dot product of the $i^{th}$ row of $X$ with the $j^{th}$ column of $Y$
+    \begin{equation*}
+        m_{ij} = \sum _{s=1} ^{k} x_{is}y_{sj} = x_{i1}y_{1j} + \dots + x_{ik}y_{kj}
+    \end{equation*}
+\item Note that even if both $XY$ and $YX$ exist, in general $XY \ne YX$
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Additonal Properties}
+    \begin{itemize}
+        \item If $X$ and $Y$ are both $n \times p$ matrices, then $X+Y = Y+X$
+\item If $X$, $Y$, and $Z$ are all $n \times p$ matrices, then $X+\left(Y+Z\right) = \left(X+Y\right)+Z$
+\item If $X$, $Y$, and $Z$ are all conformable, then $X\left(YZ\right) = \left(XY\right)Z$
+\item If $X$ is of dimension $n \times k$ and $Y$ and $Z$ are of dimension $k \times p$, then $X\left(Y+Z\right) = XY + XZ$
+\item If $X$ is of dimension $p \times n$ and $Y$ and $Z$ are of dimension $k \times p$, then $\left(Y+Z\right)X = YX + ZX$
+\item If $a$ and $b$ are real numbers, and $X$ is an $n \times p$ matrix, then $\left(a+b\right)X = aX+bX$
+\item If $a$ is a real number, and $X$ and $Y$ are both $n \times p$ matrices, then $a\left(X+Y\right) = aX+aY$
+\item If $z$ is a real number, and $X$ and $Y$ are conformable, then $X\left(aY\right) = a\left(XY\right)$
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Transpose}
+     If $X$ is an $n \times p$ matrix
+     \begin{equation*}
+            X = \left[
+            \begin{matrix} 
+                x_{11} & x_{12} & \dots & x_{1p }\\
+                x_{21} & x_{22} & \dots & x_{2p} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                x_{n1} & x_{n2} & \dots & x_{np}
+            \end{matrix}
+            \right]
+        \end{equation*}
+        Then the transpose of $X$ is a $p \times n$ matrix with the rows and columns of $X$ interchanged
+    \begin{equation*}
+        X^{T} = \left[
+            \begin{matrix} 
+                x_{11} & x_{21} & \dots & x_{n1}\\
+                x_{12} & x_{22} & \dots & x_{n2} \\
+                \vdots & \vdots & \ddots & \vdots \\
+                x_{1p} & x_{2p} & \dots & x_{np}
+            \end{matrix}
+            \right]
+        \end{equation*}
+        }
+
+\frame{
+    \frametitle{Properites of Transpose}
+    \begin{itemize}
+        \item Let $X$ be an $n \times p$ matrix and $a$ a real number, then 
+$$(cX)^T = cX^T$$
+\item Let $X$ and $Y$ be $n \times p$ matrices, then
+$$(X \pm Y)^T = X^T \pm Y^T$$
+\item Let $X$ be an $n \times k$ matrix and $Y$ be a $k \times p$ matrix, then
+$$(XY)^T = Y^TX^T$$
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Vectors in Matrix Form}
+    It can be useful to think of vectors as matrices
+    \begin{itemize}
+        \item A column vector is an $n \times 1$ matrix
+            \begin{equation*}
+                \mathbf{x} = 
+                \left[
+                    \begin{matrix}
+                        x_{1}\\
+                        x_{2}\\
+                        \vdots\\
+                        x_{n}
+                    \end{matrix}
+                    \right]
+            \end{equation*}
+        \item A row vector is written as the transpose
+            \begin{equation*}
+                \mathbf{x}^{T} = 
+                \left[
+                    \begin{matrix}
+                        x_{1} & x_{2} & \dots & x_{n}
+                    \end{matrix}
+                    \right]
+            \end{equation*}
+        \item If two vectors $\mathbf{x}$ and $\mathbf{y}$ have the same length then the dot product is matrix multiplication
+            $$\mathbf{x}^{T}\mathbf{y} = x_{1}y_{1} + \dots + x_{n}y_{n}$$
+    \end{itemize}
+        }
+
+\frame{
+    \frametitle{Inverse of a Matrix}
+    \begin{itemize}
+        \item The inverse of an $n \times n$ matrix $X$ is a matrix $X^{-1}$ of the same dimension where
+            $$X^{-1}X = XX^{-1} = I$$
+        \item $I$ is the identity matrix
+        \item if $X^{-1}$ exists then $X$ is said to be \textit{invertible} or \textit{nonsingular}, otherwise $X$ is \textit{noninvertible} or \textit{singular}
+        \item If any row (column) of $X$ can be represented as a linear combination of the other rows (columns) of $X$, then $X$ is singular
+            \begin{itemize}
+                \item The number of linearly independent columns or rows of $X$ is called the rank of $X$
+                \item If $rank\left(X\right) < n$ then $X$ is singular
+                \item If $rank\left(X\right) = n$ the $X$ is nonsingular
+            \end{itemize}
+    \end{itemize}
+}
+
+\frame{
+    \frametitle{Properties of the Inverse}
+    \begin{itemize}
+        \item If $X$ is invertible, then $X^{-1}$ is invertible and
+$$(X^{-1})^{-1} = X$$
+\item If $X$ and $Y$ are both $n \times n$ invertible matrices, then $XY$ is invertible and $$(XY)^{-1} = Y^{-1}X^{-1}$$
+\item If $X$ is invertible, then $X^T$ is invertible and $$\left(X^T\right)^{-1} = \left(X^{-1}\right)^T$$
+    \end{itemize}
+    }
+
+\frame{
+    \frametitle{Matrix Equations}
+A system of equations of the form:
+\begin{align*}
+    a_{11}x_1 + \cdots + a_{1n}x_n &= b_1 \\
+    \vdots \hspace{1in} \vdots \\
+    a_{m1}x_1 + \cdots + a_{mn}x_n &= b_m 
+\end{align*}
+can be written as a matrix equation:
+$$
+A\mathbf{x} = \mathbf{b}
+$$
+and hence, has solution
+$$
+\mathbf{x} = A^{-1}\mathbf{b}
+$$
+}
+
+\frame{
+    \frametitle{Eigenvectors and Eigenvalues}
+    Let $A$ be an $n \times n$ matrix and $\mathbf{x}$ be an $n \times 1$ nonzero vector. An \textit{eigenvalue} of $A$ is a number $\lambda$ such that
+
+$$A \mathbf{x} = \lambda \mathbf{x}$$
+
+
+A vector $\mathbf{x}$ satisfying this equation is called an \textit{eigenvector} associated with $\lambda$
+
+Eigenvectors and eigenvalues will play a huge role in matrix methods later in the course (PCA, SVD, NMF).
+}
+    
+%\frametitle{Example table}
+%\begin{table}
+%	\begin{center}
+%		\textbf{Descriptive Statistics}
+%	\end{center}
+%	\begin{tabular}{llll}
+%	\hline
+%	Stat & Cleaves & Length &Mass \\
+%	\hline
+%	Min & 1 & 3 & $500^*$ \\
+%	Max & 51 & 192 &  20446 \\
+%	Median & 10 & 12 & 1130  \\
+%	\hline
+%	\end{tabular}
+%	\label{table1}
+%\end{table}
+%$^*$ \small 500 Dalton is the suggested minimum peptide mass
+%}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame
+%{
+%  \frametitle{The block thing}
+%  \begin{block}{I am a block}
+%   you can put what ever you want in a block like bullets.  Here is an example citation. 
+%  \end{block}
+%
+%  \begin{enumerate}
+%  \item \highlt{something} - is defined as something
+%  \item \keywd{anther something} - is defined as something else         
+%  \item \highlt{that something} - and so on  
+%  \end{enumerate}
+%
+%\vspace{3cm}
+%\begin{flushleft}
+%\tiny{Anoter book but not as good as the one Bilbo wrote \tiny{\cite{Mount04}}}
+%\end{flushleft}
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[fragile]
+%\scriptsize
+%\frametitle{How to use verbatim}
+%\begin{verbatim}
+%#!/usr/bin/perl -w
+%# Some code or something  
+%
+%print "\n", "I can write anything here!!!", "\n";
+%\end{verbatim}
+% \begin{flushleft}
+%  See \href{http://www.columbia.edu/~jwp2128/Teaching/E6892/papers/mlss2007.pdf}{a lecture on Dirichlet processes} and \cite{Knuth92} for more information
+% \end{flushleft}
+%\end{frame}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \frame{
+%%  \frametitle{Including plots}
+%%  \scriptsize
+%% 
+%%  \begin{center}
+%%  \includegraphics[scale=0.3]{Someplot.png}
+%% \end{center}
+%% 
+%% \begin{flushleft}
+%%  \tiny{\cite{Mount04}}
+%% \end{flushleft}
+%%  \normalsize
+%% }
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Rohan}
+%\subsection{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame{
+%\frametitle{Some math}
+%\footnotesize
+%This approach, inspired by Yan and Nielsen, uses a set of 61 codon fitness parameters.
+%\begin{equation} 
+% \psi = (\psi_{a}) \text{ where } a \in \{1 \ldots 61 \} \text{ and } \sum a = 1 
+%\end{equation}
+%
+%\begin{equation}
+% Q_{ab} = \left\{
+% \begin{array}{l l}
+% \rho_{a_{c} b_{c}} \varphi_{b_{c}} \left( \frac{\psi_{b}}{\psi_{a}} \right)^{1/2},                        
+%     & \quad \text{\tiny{if a and b are synonymous and differ only at} } c^{\text{th}} \text{\tiny{codon position}}\\
+% \omega \rho_{a_{c} b_{c}} \varphi_{b_{c}} \left( \frac{\psi_{b}}{\psi_{a}} \right)^{1/2}, 
+%     & \quad \text{\tiny{if a and b are nonsynonymous and differ only at} } c^{\text{th}} \text{\tiny{codon position}}\\
+%    0,                                         
+%     & \quad \text{\tiny{otherwise.}} 
+%  \end{array} \right.
+% \end{equation}
+%With or without $\omega$ the models are referred to as Codon Preference (CP).  Therefore we have MG-CP, MG-NS-CP, and MG-NSDP-CP.
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}[fragile]
+% \frametitle{some example code and output}
+%\tiny
+% \scriptsize
+%\begin{code}
+%from sklearn.grid_search import GridSearchCV
+% 
+%random_forest_grid = {'max_depth': [3, None],
+%                      'max_features': ['sqrt', 'log2', None],
+%                      'min_samples_split': [1, 2, 4],
+%                      'min_samples_leaf': [1, 2, 4],
+%                      'bootstrap': [True, False],
+%                      'n_estimators': [20, 40, 60, 80, 100, 120],
+%                      'random_state': [42]}
+%
+%rf_gridsearch = GridSearchCV(RandomForestClassifier(),
+%                             random_forest_grid,
+%                             n_jobs=-1,verbose=True,
+%                             scoring='f1_weighted')
+%rf_gridsearch.fit(X_train, y_train)
+%print "best parameters:", rf_gridsearch.best_params_
+% 
+% 
+%\end{code}
+% 
+%\begin{codeout}
+% best parameters: {'bootstrap': True, 'min_samples_leaf': 1, 'n_estimators': 100, 'min_samples_split': 1, 'random_state': 42, 'max_features': 'sqrt', 'max_depth': None}
+%\end{codeout}
+%\end{frame}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\frame{
+%\scriptsize
+%\begin{enumerate}
+% \item Don't forget that itemize/enumerate can be nested
+% \item For each classifier:
+%     \begin{itemize}
+%     \scriptsize
+%      \item Fit the classifier to the training data by minimizing the weighted error function
+%      \begin{equation}
+%       J_{m} = \sum^{N}_{n=1} w_{n}^{(m)} I(y_{m}(\mathbf{x}_{n}) \neq t_{n}) 
+%      \end{equation}
+%      \item Then evaluate
+%      \begin{equation}
+%       \epsilon_{m} = \frac{\sum^{N}_{n=1}w_{n}^{(m)} I(y_{m}(\mathbf{x}_{n}) \neq t_{n})}{\sum^{N}_{n=1}w_{n}^{(m)}}
+%      \end{equation}
+%      \item to get 
+%      \begin{equation}
+%      \alpha_{m} = \ln \left\{ \frac{1-\epsilon_{m}}{\epsilon_{m}} \right\}
+%     \end{equation}
+%     
+%     \item Update the weighting coefficients
+%     \begin{equation}
+%      w_{n}^{(m+1)} = w_{n}^{(m)} \textrm{exp} \{ \alpha_{m} I(y_{m}(\mathbf{x}_{n}) \neq t_{n}) \}
+%     \end{equation}
+%     
+%     \end{itemize}
+% \item Make predictions using the final model
+% \begin{equation}
+% Y_{M}(\mathbf{x}) = \textrm{sign} \left[ \sum^{M}_{m=1} \alpha_{m} C_{m} (x) \right]    
+%\end{equation}
+%\end{enumerate}
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\frame[allowframebreaks]{
+%\frametitle{References}
+%\tiny
+%\begin{thebibliography}{9}
+%\bibliographystyle{apalike}
+%\setbeamertemplate{bibliography item}[article]
+%\bibitem{Knuth92}  D.E. Knuth, \emph{Two notes on notation}, Amer. Math. Monthly \textbf{99} (1992), 403--422.
+%\setbeamertemplate{bibliography item}[book]
+%\bibitem{Mount04} D W Mount, \emph{Bioinformatics: Sequence and Genome Informatics}, 2nd Edition, 2004 Cold Spring Harbor Laboratory Press, Cold Spring Harbor, NY pp 549 - 611
+%\setbeamertemplate{bibliography item}[online]
+%\bibitem{BioPerl} BioPerl - \href{http://www.bioperl.org/wiki/Main\_Page}{http://www.bioperl.org/wiki/Main\_Page}
+%\setbeamertemplate{bibliography item}[article]
+%\bibitem{Mangalam02} M H Mangalam, The Bio* toolkits--a brief overview., Brief Bioinform. 2002 Sep;3(3):296-302.
+%\bibitem{Stajich02} J E Stajich \textit{et al.},The Bioperl toolkit: Perl modules for the life sciences., Genome Res. 2002 Oct;12(10):1611-8.
+%\end{thebibliography}
+%\normalsize
+%}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\frame[allowframebreaks]{  
+%%\begin{tiny} \bibliography{galvanize-refs.bib}
+%%\bibliographystyle{apalike}          % Style BST file
+%%\end{tiny}
+%%}
+
+\end{document}
